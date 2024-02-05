@@ -8,6 +8,7 @@ import { Header } from "@components/Header";
 import { Highlight } from "@components/Highlight";
 import { GroupCard } from "@components/GroupCard";
 import { ListEmpty } from "@components/ListEmpty";
+import { Button } from "@components/Buttons";
 
 export const Groups = () => {
   const [groups, setGroups] = useState([]);
@@ -26,6 +27,10 @@ export const Groups = () => {
           <ListEmpty message="Que tal cadastrar a primeira turma?" />
         )}
         contentContainerStyle={groups.length === 0 && { flex: 1 }}
+      />
+
+      <Button 
+        title="Criar nova turma"
       />
     </G.Container>
   );

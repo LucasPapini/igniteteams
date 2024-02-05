@@ -8,8 +8,6 @@ export const Container = styled.View`
   justify-content: center;
 
   margin-top: 30px;
-
-  background-color: green;
 `;
 
 export const Logo = styled.Image`
