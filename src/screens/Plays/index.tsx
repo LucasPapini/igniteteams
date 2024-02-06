@@ -1,3 +1,4 @@
+import { useRoute } from "@react-navigation/native";
 import { useState } from "react";
 import { FlatList } from "react-native";
 
@@ -12,40 +13,21 @@ import { PlayerCard } from "@components/PlayerCard";
 import { ListEmpty } from "@components/ListEmpty";
 import { Button } from "@components/Buttons";
 
+type RouteParams = {
+  group: string;
+};
+
 export function Plays() {
+  const route = useRoute();
+  const { group } = route.params as RouteParams;
   const [team, setTeam] = useState("Time A");
-  const [playres, setPlayres] = useState([
-    // "Lucas",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-    // "Papini",
-  ]);
+  const [playres, setPlayres] = useState([]);
 
   return (
     <Pl.Container>
       <Header showBackButton />
 
-      <Highlight
-        title="Nome da turma"
-        subtitle="adicione a galera e separe os times"
-      />
+      <Highlight title={group} subtitle="adicione a galera e separe os times" />
 
       <Pl.Form>
         <Input placeholder="Nome da turma" autoCorrect={false} />
@@ -80,14 +62,11 @@ export function Plays() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           { paddingBottom: 100 },
-          playres.length === 0 && { flex: 1}
+          playres.length === 0 && { flex: 1 },
         ]}
       />
 
-      <Button 
-        title="Remover turma"
-        type="SECONDARY"
-      />
+      <Button title="Remover turma" type="SECONDARY" />
     </Pl.Container>
   );
 }

@@ -3,9 +3,7 @@ import theme from "./src/theme";
 import { ThemeProvider } from "styled-components/native";
 
 import { StatusBar } from "expo-status-bar";
-
-import { Plays } from "./src/screens/Plays";
-import { NewGroup } from "./src/screens/NewGroup";
+import { Routes } from "./src/routes";
 
 export default function App() {
   return (
@@ -15,7 +13,7 @@ export default function App() {
         translucent
         barStyle="light-content"
       />
-      <Plays />
+      <Routes />
     </ThemeProvider>
   );
 }
