@@ -1,5 +1,5 @@
 import { useRoute } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, FlatList } from "react-native";
 
 import * as Pl from "./styles";
@@ -15,6 +15,8 @@ import { Button } from "@components/Buttons";
 import { AppError } from "../../utils/AppError";
 import { playerAddByGroup } from "../../storage/player/playerAddByGroup";
 import { playersGetGroup } from "../../storage/player/playersGetByGroups";
+import { playersGetGroupAndTeam } from "../../storage/player/playersGetGroupAndTeam";
+import { PlayerStorageDTO } from "../../storage/player/PlayerStoregeDTO";
 
 type RouteParams = {
   group: string;
@@ -22,9 +24,11 @@ type RouteParams = {
 
 export function Plays() {
   const route = useRoute();
+
   const { group } = route.params as RouteParams;
+
   const [team, setTeam] = useState("Time A");
-  const [playres, setPlayres] = useState([]);
+  const [players, setplayers] = useState<PlayerStorageDTO[]>([]);
   const [newPlayerName, setNewPlayerName] = useState("");
 
   async function handleAddPlayer() {
@@ -36,14 +40,13 @@ export function Plays() {
     }
 
     const newPlayer = {
-      nome: newPlayerName,
+      name: newPlayerName,
       team,
     };
 
     try {
       await playerAddByGroup(newPlayer, group);
-      const players = await playersGetGroup(group);
-      console.log(players);
+      fetchPlayersByteam();
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert("Nova pessoa", error.message);
@@ -53,6 +56,19 @@ export function Plays() {
       }
     }
   }
+
+  async function fetchPlayersByteam() {
+    try {
+      const playersByTeam = await playersGetGroupAndTeam(group, team);
+      setplayers(playersByTeam);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchPlayersByteam();
+  }, [team]);
 
   return (
     <Pl.Container>
@@ -82,14 +98,14 @@ export function Plays() {
           )}
           horizontal={true}
         />
-        <Pl.NumberOfPlays>{playres.length}</Pl.NumberOfPlays>
+        <Pl.NumberOfPlays>{players.length}</Pl.NumberOfPlays>
       </Pl.HeaderList>
 
       <FlatList
-        data={playres}
-        keyExtractor={(item) => item}
+        data={players}
+        keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <PlayerCard name={item} onRemove={() => {}} />
+          <PlayerCard name={item.name} onRemove={() => {}} />
         )}
         ListEmptyComponent={() => (
           <ListEmpty message="Não há pessoas neste time" />
@@ -97,7 +113,7 @@ export function Plays() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           { paddingBottom: 100 },
-          playres.length === 0 && { flex: 1 },
+          players.length === 0 && { flex: 1 },
         ]}
       />
 
